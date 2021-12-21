@@ -23,8 +23,8 @@ namespace update_pairs
         public static int MAX_ALTRANK_PAIRS = 50;
         public static int MAX_GALAXY_PAIRS = 50;
 
-
         static void Main() { MainAsync().GetAwaiter().GetResult(); }
+        
         static async Task MainAsync()
         {
             api = new XCommasApi(key, secret, default, UserMode.Real);
