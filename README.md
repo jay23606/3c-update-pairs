@@ -1,5 +1,5 @@
 # 3c-update-pairs
-Updates a composite bot's pairs based on lunarcrush's altrank and galaxy scores
+Updates a 3commas composite bot's pairs based on lunarcrush's altrank and galaxy scores
 
 Create a new c# console program and add XCommas.Net nuget package and paste the two .cs files into project directory.
 
