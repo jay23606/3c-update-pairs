@@ -42,17 +42,17 @@ namespace update_pairs
                     HashSet<string> pairsToUpdate = new HashSet<string>();
                     foreach(Datum d in res.data)
                     {
+                        if (pairsToUpdate.Count >= MAX_ALTRANK_PAIRS) break;
                         string pair = $"USDT_{d.s}";
                         if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
-                        if (pairsToUpdate.Count >= MAX_ALTRANK_PAIRS) break;
                     }
                     int altRankPairsCount = pairsToUpdate.Count;
                     res = await GetJSON<LunarCrushRoot>("https://api.lunarcrush.com/v2?data=market&type=fast&sort=gs&limit=1000&key=asdf&desc=True");
                     foreach (Datum d in res.data)
                     {
+                        if (pairsToUpdate.Count >= altRankPairsCount + MAX_GALAXY_PAIRS) break;
                         string pair = $"USDT_{d.s}";
                         if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
-                        if (pairsToUpdate.Count >= altRankPairsCount + MAX_GALAXY_PAIRS) break;
                     }
 
                     var bots = await api.GetBotsAsync(limit: 1000, accountId: accountId, botId: botId);
