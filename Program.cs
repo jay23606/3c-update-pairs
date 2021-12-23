@@ -55,8 +55,8 @@ namespace update_pairs
                         if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
                     }
                     
-                    res = await api.ShowBotAsync(botId: botId);
-                    Bot bot = res.Data;
+                    var sb = await api.ShowBotAsync(botId: botId);
+                    Bot bot = sb.Data;
 
                     bot.Pairs = pairsToUpdate.ToArray();
 
