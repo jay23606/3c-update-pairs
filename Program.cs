@@ -54,11 +54,9 @@ namespace update_pairs
                         string pair = $"USDT_{d.s}";
                         if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
                     }
-
-                    var bots = await api.GetBotsAsync(limit: 1000, accountId: accountId, botId: botId);
-                    Bot bot = null;
-                    //XCommas should actually be passing id and not bot_id to the endpoint apparently
-                    foreach (Bot b in bots.Data) if (b.Id == botId) { bot = b; break; }
+                    
+                    res = await api.ShowBotAsync(botId: botId);
+                    Bot bot = res.Data;
 
                     bot.Pairs = pairsToUpdate.ToArray();
 
