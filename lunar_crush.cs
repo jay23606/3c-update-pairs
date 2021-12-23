@@ -11,7 +11,7 @@ namespace update_pairs
         public string s { get; set; }
         public string n { get; set; }
         public double p { get; set; }
-        public int p_btc { get; set; }
+        public double p_btc { get; set; }
         public double v { get; set; }
         public double vt { get; set; }
         public double pc { get; set; }
