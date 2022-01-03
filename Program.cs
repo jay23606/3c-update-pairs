@@ -62,6 +62,7 @@ namespace update_pairs
 
                     var ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
                     if (ub.IsSuccess) Console.WriteLine($"Successfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
+                    else Console.WriteLine($"ERROR: {ub.Error}");
                 }
                 catch (Exception ex)
                 {
