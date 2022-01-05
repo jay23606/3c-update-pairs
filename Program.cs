@@ -33,14 +33,7 @@ namespace update_pairs
         {
             api = new XCommasApi(key, secret, default, UserMode.Real);
             var accts = await api.GetAccountsAsync();
-            if (accountId != 0) 
-            { 
-                foreach (var acct in accts.Data) 
-                    if (acct.MarketCode == market) { 
-                        accountId = acct.Id; 
-                        break; 
-                    } 
-            }
+            if (accountId == 0) foreach (var acct in accts.Data) if (acct.MarketCode == market) { accountId = acct.Id; break; }
             var marketPairs = await api.GetMarketPairsAsync(market);
             HashSet<string> pairs = new HashSet<string>();
             foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p + ((usePerp) ? "-PERP" : "")); //get available USDT pairs 
