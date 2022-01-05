@@ -91,7 +91,25 @@ namespace update_pairs
                     if (ub.IsSuccess) Console.WriteLine($"\nSuccessfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
                     else
                     {
-                        Console.WriteLine($"ERROR: {ub.Error}");
+                        if(ub.Error.Contains("No market data for this pair"))
+                        {
+                            string[] badPairs = ub.Error.Split(": ").Select(p => p.Replace("\"", "").Replace(",", "").Trim()).ToArray();
+                            foreach (string badPair in badPairs)
+                                if (pairsToUpdate.Contains(badPair))
+                                {
+                                    Console.WriteLine($"Removed {badPair} on {market} because it only exists on spot");
+                                    pairsToUpdate.Remove(badPair);
+                                }
+                                else if (badPair.Contains("USD")) Console.WriteLine(badPair + " malformed?");
+                            bot.Pairs = pairsToUpdate.ToArray();
+                            ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
+                            if (ub.IsSuccess) Console.WriteLine($"\nSuccessfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
+                            else Console.WriteLine($"ERROR: {ub.Error}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"ERROR: {ub.Error}");
+                        }
                     }
                 }
                 catch (Exception ex)
