@@ -19,7 +19,6 @@ namespace update_pairs
         static bool usePerp = false;
         static int botId = 1234567;
         static int accountId = 0;
-        
         public static XCommasApi api;
         public static HttpClient hc = new HttpClient();
 
@@ -31,12 +30,10 @@ namespace update_pairs
         static void Main() { MainAsync().GetAwaiter().GetResult(); }
         static async Task MainAsync()
         {
+            string perp = ((usePerp) ? "-PERP" : "");
             api = new XCommasApi(key, secret, default, UserMode.Real);
             var accts = await api.GetAccountsAsync();
             if (accountId == 0) foreach (var acct in accts.Data) if (acct.MarketCode == market) { accountId = acct.Id; break; }
-            var marketPairs = await api.GetMarketPairsAsync(market);
-            HashSet<string> pairs = new HashSet<string>();
-            foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p + ((usePerp) ? "-PERP" : "")); //get available USDT pairs 
 
             while (true)
             {
@@ -48,22 +45,22 @@ namespace update_pairs
                     foreach(Datum d in res.data)
                     {
                         if (pairsToUpdate.Count >= MAX_ALTRANK_PAIRS) break;
-                        string pair = $"{baseType}_{d.s}{((usePerp) ? "-PERP" : "")}";
-                        if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
+                        string pair = $"{baseType}_{d.s}{perp}";
+                        var cr = await api.GetCurrencyRateAsync(pair, market);
+                        if (cr.IsSuccess && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
                     }
                     int altRankPairsCount = pairsToUpdate.Count;
                     res = await GetJSON<LunarCrushRoot>("https://api.lunarcrush.com/v2?data=market&type=fast&sort=gs&limit=1000&key=asdf&desc=True");
                     foreach (Datum d in res.data)
                     {
                         if (pairsToUpdate.Count >= altRankPairsCount + MAX_GALAXY_PAIRS) break;
-                        string pair = $"{baseType}_{d.s}{((usePerp) ? "-PERP" : "")}";
-                        if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
+                        string pair = $"{baseType}_{d.s}{perp}";
+                        var cr = await api.GetCurrencyRateAsync(pair, market);
+                        if (cr.IsSuccess && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
                     }
-
                     var sb = await api.ShowBotAsync(botId: botId);
                     Bot bot = sb.Data;
                     bot.Pairs = pairsToUpdate.ToArray();
-
                     var ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
                     if (ub.IsSuccess) Console.WriteLine($"Successfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
                     else Console.WriteLine($"ERROR: {ub.Error}");
