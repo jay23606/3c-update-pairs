@@ -33,7 +33,8 @@ namespace update_pairs
         {
             api = new XCommasApi(key, secret, default, UserMode.Real);
             var accts = await api.GetAccountsAsync();
-            if (accountId != 0) { 
+            if (accountId != 0) 
+            { 
                 foreach (var acct in accts.Data) 
                     if (acct.MarketCode == market) { 
                         accountId = acct.Id; 
