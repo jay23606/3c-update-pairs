@@ -17,7 +17,7 @@ namespace update_pairs
         static string market = "kucoin";
         static string baseType = "USDT";
         static bool usePerp = false;
-        static int botId = 7434870;
+        static int botId = 1234567;
         static int accountId = 0;
         
         public static XCommasApi api;
