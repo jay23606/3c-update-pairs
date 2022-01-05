@@ -100,7 +100,7 @@ namespace update_pairs
                                     Console.WriteLine($"Removed {badPair} on {market} because it only exists on spot");
                                     pairsToUpdate.Remove(badPair);
                                 }
-                                else if (badPair.Contains("USD")) Console.WriteLine(badPair + " malformed?");
+                                else if (badPair.Contains(baseType)) Console.WriteLine(badPair + " malformed?");
                             bot.Pairs = pairsToUpdate.ToArray();
                             ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
                             if (ub.IsSuccess) Console.WriteLine($"\nSuccessfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
