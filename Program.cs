@@ -35,7 +35,7 @@ namespace update_pairs
 
             HashSet<string> pairs = new HashSet<string>();
             var marketPairs = await api.GetMarketPairsAsync(market);
-            foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p); //pairs.Add(p + perp);
+            foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p + perp);
 
             while (true)
             {
