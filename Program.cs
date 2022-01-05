@@ -36,7 +36,7 @@ namespace update_pairs
             if (accountId != 0) foreach (var acct in accts.Data) if (acct.MarketCode == market) { accountId = acct.Id; break; }
             var marketPairs = await api.GetMarketPairsAsync(market);
             HashSet<string> pairs = new HashSet<string>();
-            foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p); //get available USDT pairs 
+            foreach (string p in marketPairs.Data) if (p.StartsWith(baseType)) pairs.Add(p + ((usePerp) ? "-PERP" : "")); //get available USDT pairs 
 
             while (true)
             {
