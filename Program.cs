@@ -60,18 +60,9 @@ namespace update_pairs
                         if (pairs.Contains(pair) && !pairsToUpdate.Contains(pair)) pairsToUpdate.Add(pair);
                     }
 
-                    //var bots = await api.GetBotsAsync(limit: 1000, accountId: accountId, botId: botId);
                     var sb = await api.ShowBotAsync(botId: botId);
                     Bot bot = sb.Data;
-                    //foreach (Bot b in bots.Data) if (b.Id == botId) { bot = b; break; }
-
                     bot.Pairs = pairsToUpdate.ToArray();
-
-                    
-                    TradingViewBotStrategy tv = (TradingViewBotStrategy)bot.Strategies[0];
-                    if (r.Next(1, 4) == 1) tv.Options.Type = TradingViewIndicatorType.Sell; //occasionally allow sell instead of strong sell
-                    else tv.Options.Type = TradingViewIndicatorType.StrongSell;
-
 
                     var ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
                     if (ub.IsSuccess) Console.WriteLine($"Successfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
