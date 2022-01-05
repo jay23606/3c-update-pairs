@@ -85,7 +85,7 @@ namespace update_pairs
                     }
                     var sb = await api.ShowBotAsync(botId: botId);
                     Bot bot = sb.Data;
-
+                    //pairsToUpdate.Add("USDT_TESTTEST");
                     bot.Pairs = pairsToUpdate.ToArray();
                     var ub = await api.UpdateBotAsync(botId, new BotUpdateData(bot));
                     if (ub.IsSuccess) Console.WriteLine($"\nSuccessfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
@@ -93,7 +93,7 @@ namespace update_pairs
                     {
                         if(ub.Error.Contains("No market data for this pair"))
                         {
-                            string[] badPairs = ub.Error.Split(": ").Select(p => p.Replace("\"", "").Replace(",", "").Trim()).ToArray();
+                            string[] badPairs = ub.Error.Split(": ").Select(p => p.Substring(0, p.IndexOf('"'))).ToArray();
                             foreach (string badPair in badPairs)
                                 if (pairsToUpdate.Contains(badPair))
                                 {
