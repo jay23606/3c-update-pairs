@@ -25,8 +25,6 @@ namespace update_pairs
         public static int MAX_ALTRANK_PAIRS = 40;
         public static int MAX_GALAXY_PAIRS = 20;
 
-        static Random r = new Random();
-
         static void Main() { MainAsync().GetAwaiter().GetResult(); }
         static async Task MainAsync()
         {
