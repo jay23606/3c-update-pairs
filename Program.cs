@@ -1,11 +1,6 @@
-using System;
-using System.Linq;
 using XCommas.Net;
 using XCommas.Net.Objects;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Net;
-using System.Net.Http;
 
 namespace update_pairs
 {
@@ -22,8 +17,7 @@ namespace update_pairs
         public static XCommasApi api;
         public static HttpClient hc = new HttpClient();
 
-        public static int MAX_ALTRANK_PAIRS = 20;
-        public static int MAX_GALAXY_PAIRS = 20;
+        public static int MAX_BUBBLE_PAIRS = 50;
 
         static void Main() { MainAsync().GetAwaiter().GetResult(); }
         static async Task MainAsync()
@@ -41,48 +35,30 @@ namespace update_pairs
             {
                 try
                 {
-                    Console.WriteLine("Adding AltRank pairs...");
-                    LunarCrushRoot res = await GetJSON<LunarCrushRoot>("https://api.lunarcrush.com/v2?data=market&type=fast&sort=acr&limit=1000&key=asdf");
+                    Console.WriteLine("Adding cryptobubble pairs...");
+                    List<Bubble500Root> bubbles = await GetJSON<List<Bubble500Root>>("https://cryptobubbles.net/backend/data/currentBubbles500.json");
+
+                    bubbles = bubbles.OrderByDescending(x => x.data.usd.performance.min5).ToList();
+
                     HashSet<string> pairsToUpdate = new HashSet<string>();
                     int idx = 1;
-                    foreach(Datum d in res.data)
+                    foreach (Bubble500Root bubble in bubbles)
                     {
-                        if (pairsToUpdate.Count >= MAX_ALTRANK_PAIRS) break;
-                        string pair = $"{baseType}_{d.s}{perp}";
+                        if (pairsToUpdate.Count >= MAX_BUBBLE_PAIRS) break;
+                        string pair = $"{baseType}_{bubble.symbol}{perp}";
                         if (!pairsToUpdate.Contains(pair))
                         {
-                            //var cr = await api.GetCurrencyRateAsync(pair, market);
-                            //if (cr.IsSuccess)
-                            if(pairs.Contains(pair))
-                            {
-                                pairsToUpdate.Add(pair);
-                                Console.WriteLine($"{idx}) Added {pair} on {market}");
-                            }
-                            else Console.WriteLine($"{idx}) {pair} not available on {market}");
-                        }
-                        idx++;
-                    }
-                    int altRankPairsCount = pairsToUpdate.Count;
-                    Console.WriteLine("\nAdding Galaxy pairs...");
-                    res = await GetJSON<LunarCrushRoot>("https://api.lunarcrush.com/v2?data=market&type=fast&sort=gs&limit=1000&key=asdf&desc=True");
-                    idx = 1;
-                    foreach (Datum d in res.data)
-                    {
-                        if (pairsToUpdate.Count >= altRankPairsCount + MAX_GALAXY_PAIRS) break;
-                        string pair = $"{baseType}_{d.s}{perp}";
-                        if (!pairsToUpdate.Contains(pair))
-                        {
-                            //var cr = await api.GetCurrencyRateAsync(pair, market);
-                            //if (cr.IsSuccess)
                             if (pairs.Contains(pair))
                             {
                                 pairsToUpdate.Add(pair);
                                 Console.WriteLine($"{idx}) Added {pair} on {market}");
                             }
-                            else Console.WriteLine($"{idx}) {pair} not available on {market}");
                         }
                         idx++;
                     }
+
+                    //return;
+
                     var sb = await api.ShowBotAsync(botId: botId);
                     Bot bot = sb.Data;
                     //pairsToUpdate.Add("USDT_TESTTEST");
@@ -91,7 +67,8 @@ namespace update_pairs
                     if (ub.IsSuccess) Console.WriteLine($"\nSuccessfully updated {bot.Name} with {pairsToUpdate.Count} new pairs..");
                     else
                     {
-                        if(ub.Error.Contains("No market data for this pair"))
+                        //I couldn't find the market code for ftx futures although it probably exists
+                        if (ub.Error.Contains("No market data for this pair"))
                         {
                             string[] badPairs = ub.Error.Split(": ").Select(p => p.Substring(0, p.IndexOf('"'))).ToArray();
                             foreach (string badPair in badPairs)
