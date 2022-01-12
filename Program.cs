@@ -51,7 +51,7 @@ namespace update_pairs
                             if (pairs.Contains(pair))
                             {
                                 pairsToUpdate.Add(pair);
-                                Console.WriteLine($"{idx}) Added {pair} on {market}");
+                                Console.WriteLine($"{idx}) Added {pair} on {market}, performance: {bubble.data.usd.performance.min5}");
                             }
                         }
                         idx++;
