@@ -9,10 +9,10 @@ namespace update_pairs
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Performance
     {
-        public double hour { get; set; }
-        public double day { get; set; }
-        public double week { get; set; }
-        public double month { get; set; }
+        public double? hour { get; set; }
+        public double? day { get; set; }
+        public double? week { get; set; }
+        public double? month { get; set; }
         public double? year { get; set; }
         public double? min15 { get; set; }
         public double? min5 { get; set; }
