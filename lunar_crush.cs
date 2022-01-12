@@ -30,7 +30,7 @@ namespace update_pairs
         public int yt { get; set; }
         public int sv { get; set; }
         public int u { get; set; }
-        public int c { get; set; }
+        public int? c { get; set; }
         public double sd { get; set; }
         public double d { get; set; }
         public double cr { get; set; }
@@ -79,7 +79,7 @@ namespace update_pairs
         public int yt { get; set; }
         public int sv { get; set; }
         public int u { get; set; }
-        public int c { get; set; }
+        public int? c { get; set; }
         public double sd { get; set; }
         public double d { get; set; }
         public double cr { get; set; }
